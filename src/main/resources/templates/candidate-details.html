@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title th:text="${candidate != null ? 'Candidate ' + candidate.candidateIdFromFile : 'Candidate Details'}">Candidate Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header mb-4">
+        <h1 class="h2" th:text="${candidate != null ? 'Candidate Details: ' + candidate.candidateIdFromFile : 'Candidate Details'}">Candidate Details</h1>
+        <a th:href="@{/ui/candidates}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Candidates List
+        </a>
+    </div>
+    <div th:if="${candidate == null and errorMessage == null}" class="alert alert-danger" role="alert">
+        Candidate details could not be loaded. It might not exist or an error occurred.
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}">Error message goes here</span>
+    </div>
+    <div class="row g-4" th:if="${candidate != null}"> <div class="col-lg-5"> <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Candidate Information</span>
+            <span th:switch="${candidate.status}" class="badge fs-6 ms-2"
+                  th:classappend="${candidate.status == 'PARSED' ? 'text-bg-success' :
+                                               candidate.status == 'PARSING' ? 'text-bg-warning' :
+                                               candidate.status != null and candidate.status.startsWith('ERROR') ? 'text-bg-danger' :
+                                               'text-bg-secondary'}">
+                             <span th:case="'PARSING'"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Parsing...</span>
+                              <span th:case="*" th:text="${candidate.status}">UPLOADED</span>
+                         </span>
+        </div>
+        <div class="card-body">
+            <p><strong>Database ID:</strong> <span th:text="${candidate.id}"></span></p>
+            <p><strong>File ID:</strong> <span th:text="${candidate.candidateIdFromFile}"></span></p>
+            <p><strong>Original Path:</strong> <small class="text-muted" th:text="${candidate.originalFilePath}"></small></p>
+            <hr>
+            <p th:if="${candidate.name != null}"><strong>Name (Parsed):</strong> <strong th:text="${candidate.name}"></strong></p>
+            <p th:unless="${candidate.name != null}" class="text-muted">Name not parsed.</p>
+            <p th:if="${candidate.email != null}"><strong>Email (Parsed):</strong> <span th:text="${candidate.email}"></span></p>
+            <p th:unless="${candidate.email != null}" class="text-muted">Email not parsed.</p>
+            <p th:if="${candidate.phone != null}"><strong>Phone (Parsed):</strong> <span th:text="${candidate.phone}"></span></p>
+            <p th:unless="${candidate.phone != null}" class="text-muted">Phone not parsed.</p>
+        </div>
+    </div>
+    </div>
+
+        <div class="col-lg-7"> <div class="card h-100">
+            <div class="card-header">
+                AI Extracted CV Data
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-0" role="alert" th:if="${candidate.status == 'UPLOADED' or candidate.status == 'PARSING'}">
+                    This candidate's CV is currently being processed or is pending processing. Extracted data will appear here once complete.
+                </div>
+                <div class="alert alert-warning mb-0" role="alert" th:if="${candidate.status == 'PARSED' and (candidate.extractedCvJson == null or candidate.extractedCvJson.isBlank())}">
+                    Candidate is marked as parsed, but the extracted data is missing or empty.
+                </div>
+                <div class="alert alert-danger mb-0" role="alert" th:if="${candidate.status == 'ERROR_PARSING' and (candidate.extractedCvJson == null or candidate.extractedCvJson.isBlank())}">
+                    An error occurred during CV parsing, and no data was stored.
+                </div>
+
+                <div id="cv-data-display" th:if="${candidate.extractedCvJson != null and not candidate.extractedCvJson.isBlank()}">
+                    <pre class="bg-light p-3 rounded border" th:text="${candidate.extractedCvJson}"></pre>
+                    <small class="text-muted">(Raw JSON shown. Pretty display requires JavaScript.)</small>
+                    <small class="text-danger d-block" th:if="${candidate.status == 'ERROR_PARSING'}" th:text="${'(Note: Status indicates error during last attempt. Content shown might be from previous success or the error message.)'}"></small>
+                </div>
+                <input type="hidden" id="raw-cv-json" th:if="${candidate.extractedCvJson}" th:value="${candidate.extractedCvJson}">
+            </div>
+        </div>
+        </div>
+    </div> <div class="mt-5" th:if="${candidate != null}">
+    <h3 class="mb-3">Job Applications / Matches</h3>
+    <div class="card">
+        <div class="card-header">Associated Jobs</div>
+        <div class="card-body">
+            <p class="text-muted">(Displaying associated job applications for this candidate is not yet implemented in the controller.)</p>
+        </div>
+    </div>
+</div>
+
+</div> <th:block layout:fragment="page-script">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawJsonElement = document.getElementById('raw-cv-json');
+            const displayElement = document.getElementById('cv-data-display');
+
+            if (typeof renderJsonAsDl !== 'function') {
+                window.renderJsonAsDl = function(data) { // Basic fallback
+                    const pre = document.createElement('pre');
+                    pre.className = 'bg-light p-3 rounded border';
+                    pre.textContent = JSON.stringify(data, null, 2);
+                    return pre;
+                };
+            }
+            if (rawJsonElement && displayElement && rawJsonElement.value) {
+                try {
+                    const data = JSON.parse(rawJsonElement.value);
+                    displayElement.innerHTML = '';
+                    displayElement.appendChild(renderJsonAsDl(data)); // Use helper
+                } catch (e) {
+                    console.error("Failed to parse/render CV JSON:", e);
+                    const errorMsg = document.createElement('p');
+                    errorMsg.innerHTML = '<small class="text-danger">Could not parse stored CV JSON for display.</small>';
+                    displayElement.appendChild(errorMsg);
+                }
+            } else if (displayElement) {
+                const status = /*[[${candidate?.status}]]*/ null;
+                if(status !== 'PARSED' && !(status === 'ERROR_PARSING' && rawJsonElement && rawJsonElement.value)) {
+                    displayElement.innerHTML = '';
+                } else if (status === 'PARSED' && (!rawJsonElement || !rawJsonElement.value)) {
+                }
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

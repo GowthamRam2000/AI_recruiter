@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>Home</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5 text-center">
+      <i class="bi bi-robot" style="font-size: 3rem; color: var(--bs-primary-rgb);"></i>
+      <h1 class="display-5 fw-bold mt-3">Welcome to AI Recruiter Built for Accenture Hackathon contest by Gowtham Ram</h1>
+      <p class="fs-5 text-muted col-md-8 mx-auto">
+        Streamline your recruitment process. Upload job descriptions and candidate CVs, let AI analyze and match them, and manage your workflow efficiently.
+      </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+        <a th:href="@{/ui/jobs}" role="button" class="btn btn-primary btn-lg px-4 gap-3">
+          <i class="bi bi-briefcase-fill"></i> Manage Jobs
+        </a>
+        <a th:href="@{/ui/candidates}" role="button" class="btn btn-outline-secondary btn-lg px-4">
+          <i class="bi bi-people-fill"></i> Manage Candidates
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom text-center">Overview</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-2 justify-content-center">
+      <div class="feature col">
+        <div class="card h-100 text-center shadow-sm">
+          <div class="card-body">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3">
+              <i class="bi bi-briefcase p-2"></i>
+            </div>
+            <h3 class="fs-4 text-body-emphasis">Jobs Loaded</h3>
+            <p class="display-4 fw-bold" th:text="${jobCount != null ? jobCount : 'N/A'}">60</p>
+          </div>
+        </div>
+      </div>
+      <div class="feature col">
+        <div class="card h-100 text-center shadow-sm">
+          <div class="card-body">
+            <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-4 rounded-3 mb-3">
+              <i class="bi bi-people p-2"></i>
+            </div>
+            <h3 class="fs-4 text-body-emphasis">Candidates Added</h3>
+            <p class="display-4 fw-bold" th:text="${candidateCount != null ? candidateCount : 'N/A'}">3</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

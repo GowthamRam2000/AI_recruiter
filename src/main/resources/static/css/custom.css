@@ -1,0 +1,68 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+main.container, main.container-fluid {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+.page-header {
+    padding-bottom: 9px;
+    margin: 20px 0 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card {
+    margin-bottom: 1.5rem;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.card-header {
+    background-color: #e9ecef;
+    font-weight: bold;
+    border-bottom: 1px solid #dee2e6;
+}
+.table {
+    margin-bottom: 0;
+}
+.table thead th {
+    background-color: #e9ecef;
+    border-bottom-width: 1px;
+    font-weight: bold;
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+.table .btn-sm {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
+}
+.table .btn-group .btn {
+    margin-right: 2px;
+}
+#summary-display dl dt, #cv-data-display dl dt {
+    color: #495057;
+    padding-top: 0.5rem;
+}
+#summary-display dl dd, #cv-data-display dl dd {
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid #eee;
+}
+#summary-display dl dd ul, #cv-data-display dl dd ul {
+    padding-left: 1rem;
+    margin-bottom: 0;
+}
+footer {
+    border-top: 1px solid #dee2e6;
+    color: #6c757d;
+}
