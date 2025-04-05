@@ -96,11 +96,9 @@ Follow these steps to run the project locally:
 * **Database & User:** Create a dedicated database and user for the application. Using `psql` (connect as an admin user):
     ```sql
     CREATE DATABASE recruitment_ai_db;
-    -- Use a STRONG password and store it securely!
     CREATE USER recruitment_user WITH PASSWORD 'YourSecurePassword123!';
-    -- Grant necessary privileges
     GRANT ALL PRIVILEGES ON DATABASE recruitment_ai_db TO recruitment_user;
-    \c recruitment_ai_db -- Connect to the new database
+    recruitment_ai_db 
     GRANT USAGE, CREATE ON SCHEMA public TO recruitment_user;
     \q
     ```
