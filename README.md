@@ -87,7 +87,7 @@ Follow these steps to run the project locally:
     ```bash
     ollama pull gemma3:4b # Recommended if you have >8GB RAM + GPU
     # OR
-    ollama pull gemma3:1b # Lighter version if needed
+    ollama pull gemma3:1b 
     ```
     Verify the exact model tag available using `ollama list`. **Ensure the Ollama application/server is running** before starting the Spring Boot app.
 * **PostgreSQL:** Install and run a PostgreSQL server (Version 12+ recommended).
